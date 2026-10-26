@@ -1,0 +1,13 @@
+@model string
+
+@{
+    ViewData["Title"] = "Page unavailable";
+}
+
+<section class="content-section">
+    <h1>Unable to load this page</h1>
+    <p class="notice notice--error" role="alert">@Model</p>
+    <a class="button button--primary"
+       href="@(Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString)"
+       data-navigation>Try again</a>
+</section>

@@ -1,0 +1,68 @@
+@model SensorHistoryViewModel
+@{
+    ViewData["Title"] = "Sensor history";
+}
+
+<a class="back-link" asp-action="Details" asp-route-id="@Model.Sensor.Id">← Back to sensor</a>
+<div class="section-heading">
+    <div>
+        <h1>Sensor history</h1>
+        <p>@Model.Sensor.DeviceIdentifier · @Model.Sensor.DeploymentPath</p>
+    </div>
+</div>
+
+<section class="content-section" aria-labelledby="historyRangeHeading">
+    <h2 id="historyRangeHeading">Time range</h2>
+    <p class="muted-text">Enter times in UTC. Both start and end times are included.</p>
+    <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+    <form asp-action="History" asp-route-id="@Model.Sensor.Id" method="get">
+        <div class="field-grid">
+            <div class="field">
+                <label for="From">Start time (UTC)</label>
+                @Html.TextBox("From", Model.Filters.From, "{0:yyyy-MM-ddTHH:mm:ss}", new { type = "datetime-local", step = "1", required = "required" })
+            </div>
+            <div class="field">
+                <label for="To">End time (UTC)</label>
+                @Html.TextBox("To", Model.Filters.To, "{0:yyyy-MM-ddTHH:mm:ss}", new { type = "datetime-local", step = "1", required = "required" })
+            </div>
+            <div class="field">
+                <label for="Limit">Maximum readings</label>
+                @Html.TextBox("Limit", Model.Filters.Limit, new { type = "number", min = "1", max = "1000", required = "required" })
+            </div>
+        </div>
+        <button class="button button--primary" type="submit">Apply range</button>
+        <a class="button button--secondary" asp-action="History" asp-route-id="@Model.Sensor.Id">Last hour</a>
+    </form>
+</section>
+
+@if (Model.History is { } history)
+{
+    <h2>Readings</h2>
+    @if (history.Readings.Count == 0)
+    {
+        <div class="empty-state"><p>No readings were found in this time range.</p></div>
+    }
+    else
+    {
+        <p role="status">@history.Readings.Count @(history.Readings.Count == 1 ? "reading" : "readings") shown in timestamp order.</p>
+        @if (history.HasMore)
+        {
+            <p class="notice">Showing the newest @Model.Filters.Limit @(Model.Filters.Limit == 1 ? "reading" : "readings") in this range. Narrow the range or increase the limit to see more.</p>
+        }
+        <div class="table-shell" tabindex="0" role="region" aria-label="Sensor history readings">
+            <table class="data-table">
+                <thead><tr><th scope="col">Timestamp (UTC)</th><th scope="col">Value</th><th scope="col">Status</th></tr></thead>
+                <tbody>
+                    @foreach (var reading in history.Readings)
+                    {
+                        <tr>
+                            <td>@reading.Timestamp.UtcDateTime.ToString("dd MMM yyyy HH:mm:ss.fff")</td>
+                            <td>@reading.Value @reading.Unit</td>
+                            <td>@(reading.IsAnomaly ? reading.AnomalyMessage ?? "Anomaly" : "Normal")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}

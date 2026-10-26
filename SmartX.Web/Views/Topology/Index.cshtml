@@ -1,0 +1,133 @@
+@model TopologyViewModel
+@{
+    ViewData["Title"] = "Network topology";
+    var links = Model.Links;
+    var reachable = Model.Reachability?.ReachableNodeIds.ToHashSet() ?? new HashSet<Guid>();
+}
+
+<div id="topologyPage" data-url="@Url.Action("Index", new { search = Model.Search, snapshot = true })">
+<div class="section-heading">
+    <div>
+        <h1>Network topology</h1>
+        <p>Device availability and weighted connections across the mesh.</p>
+    </div>
+    <a id="refreshTopology" class="button button--secondary" asp-action="Index" asp-route-search="@Model.Search">Refresh</a>
+</div>
+
+<p id="topologyStatus" class="muted-text" role="status"></p>
+<p class="muted-text" data-topology-region="summary">
+    @Model.Nodes.Count @(Model.Nodes.Count == 1 ? "node" : "nodes") · @Model.Nodes.Values.Count(node => node.IsAvailable) available · @links.Count @(links.Count == 1 ? "connection" : "connections")
+    <br />
+    Sensors reachable from gateway: @Model.Nodes.Values.Count(node => !node.IsGateway && reachable.Contains(node.Id)) · Online but disconnected: @Model.Nodes.Values.Count(node => !node.IsGateway && node.IsAvailable && !reachable.Contains(node.Id))
+</p>
+
+<partial name="_Controls" model="Model" />
+
+<section class="content-section" aria-labelledby="routeHeading">
+    <h2 id="routeHeading">Gateway route</h2>
+    <form asp-action="Index" method="get" class="network-search">
+        <div class="field">
+            <label for="networkSearch">Device identifier</label>
+            <input id="networkSearch" name="search" value="@Model.Search" placeholder="e.g. ESP32-PWR-01" />
+        </div>
+        <button class="button button--primary" type="submit">Find route</button>
+        <a class="button button--secondary" asp-action="Index">Clear</a>
+    </form>
+    <div data-topology-region="route">
+    @if (!string.IsNullOrEmpty(Model.Search))
+    {
+        @if (Model.Matches.Count == 0)
+        {
+            <p role="status">No device matches “@Model.Search”.</p>
+        }
+        else if (Model.Matches.Count > 1)
+        {
+            <p>Select a device to view its gateway route.</p>
+            <ul>
+                @foreach (var node in Model.Matches)
+                {
+                    <li><a asp-action="Index" asp-route-search="@node.Identifier">@node.Identifier</a></li>
+                }
+            </ul>
+        }
+        else if (Model.Route is { IsReachable: true } route)
+        {
+            <p class="network-route" role="status">@string.Join(" → ", route.NodeIds.Select(id => Model.Nodes[id].Identifier))</p>
+            <p>Route cost: <strong>@route.TotalCost?.ToString("G")</strong></p>
+            <p class="muted-text">The highlighted route follows the minimum spanning tree to the gateway.</p>
+        }
+        else
+        {
+            <p role="status">No gateway route is available for @Model.Matches[0].Identifier. The device is offline or disconnected from the gateway.</p>
+        }
+    }
+    </div>
+</section>
+
+<div data-topology-region="network">
+<partial name="_Network" model="Model" />
+
+<h2>Nodes</h2>
+<div class="table-shell" tabindex="0" role="region" aria-label="Network nodes">
+    <table class="data-table">
+        <thead>
+            <tr><th scope="col">Identifier</th><th scope="col">Role</th><th scope="col">Availability</th><th scope="col">Gateway connection</th><th scope="col">Last heartbeat</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var node in Model.Nodes.Values.OrderByDescending(node => node.IsGateway).ThenBy(node => node.Identifier))
+            {
+                <tr>
+                    <td>
+                        @if (node.IsGateway)
+                        {
+                            <strong>@node.Identifier</strong>
+                        }
+                        else
+                        {
+                            <a asp-controller="Sensors" asp-action="Details" asp-route-id="@node.Id">@node.Identifier</a>
+                        }
+                    </td>
+                    <td>@(node.IsGateway ? "Gateway" : "Sensor")</td>
+                    <td>@(node.IsAvailable ? "Available" : "Offline")</td>
+                    <td>@(node.IsGateway ? "Gateway" : !node.IsAvailable ? "Offline" : reachable.Contains(node.Id) ? "Reachable" : "Disconnected")</td>
+                    <td>@(node.IsGateway ? "Not applicable" : node.LastHeartbeat?.ToLocalTime().ToString("dd MMM HH:mm:ss") ?? "Not received")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h2 class="mt-4">Connections</h2>
+@if (links.Count == 0)
+{
+    <div class="empty-state">
+        <h3>No connections configured</h3>
+        <p>Use Load samples in Demo controls to create the demonstration mesh.</p>
+    </div>
+}
+else
+{
+    <div class="table-shell" tabindex="0" role="region" aria-label="Network connections">
+        <table class="data-table">
+            <thead>
+                <tr><th scope="col">First node</th><th scope="col">Second node</th><th scope="col">Cost</th><th scope="col">Availability</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var link in links)
+                {
+                    var from = Model.Nodes[link.FromNodeId];
+                    var to = Model.Nodes[link.ToNodeId];
+                    <tr>
+                        <td>@from.Identifier</td>
+                        <td>@to.Identifier</td>
+                        <td>@link.Cost.ToString("G")</td>
+                        <td>@(from.IsAvailable && to.IsAvailable ? "Available" : "Unavailable")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+</div>
+</div>

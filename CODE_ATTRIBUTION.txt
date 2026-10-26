@@ -1,0 +1,306 @@
+/*Author: Zenwyn Naicker*/
+/*Code Attribution: */
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Create web APIs with ASP.NET Core
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-10.0> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Overview of ASP.NET Core MVC
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/aspnet/core/mvc/overview?view=aspnetcore-10.0> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Configuration in ASP.NET Core
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-10.0> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Dependency injection in ASP.NET Core
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-10.0> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Use the IHttpClientFactory
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/core/extensions/httpclient-factory> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Upload files in ASP.NET Core
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-10.0> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: ASP.NET Core Data Protection overview
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/introduction?view=aspnetcore-10.0> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Generate OpenAPI documents
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi?view=aspnetcore-10.0> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Generic types and methods
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/generics> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Operator overloading
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/operator-overloading> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Arrays
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/arrays> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2025
+ * Title: Unit testing C# with xUnit
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-csharp-with-xunit> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Bootstrap Team
+ * Date: 2026
+ * Title: Get started with Bootstrap 5.3
+ * Type: [Source Code]
+ * Available at: <https://getbootstrap.com/docs/5.3/getting-started/introduction/> [Accessed 1 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Queue<T> Class
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.queue-1?view=net-10.0> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: PriorityQueue<TElement,TPriority> Class
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.priorityqueue-2?view=net-10.0> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Stack<T> Class
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.stack-1?view=net-10.0> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Dictionary<TKey,TValue> Class
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=net-10.0> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: SortedDictionary<TKey,TValue> Class
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.sorteddictionary-2?view=net-10.0> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: HashSet<T> Class
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1?view=net-10.0> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Background tasks with hosted services in ASP.NET Core
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-10.0> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: The lock statement - synchronize access to shared resources
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/lock> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: TaskCompletionSource Class
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcompletionsource?view=net-10.0> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2025
+ * Title: Sorting Data
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/csharp/linq/standard-query-operators/sorting-data> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: MDN contributors
+ * Date: 2025
+ * Title: Using the Fetch API
+ * Type: [Source Code]
+ * Available at: <https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: MDN contributors
+ * Date: 2025
+ * Title: Working with the History API
+ * Type: [Source Code]
+ * Available at: <https://developer.mozilla.org/en-US/docs/Web/API/History_API/Working_with_the_History_API> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: MDN contributors
+ * Date: 2025
+ * Title: Window: sessionStorage property
+ * Type: [Source Code]
+ * Available at: <https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: MDN contributors
+ * Date: 2025
+ * Title: AbortController
+ * Type: [Source Code]
+ * Available at: <https://developer.mozilla.org/en-US/docs/Web/API/AbortController> [Accessed 25 September 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: List<T> Constructors
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.-ctor?view=net-10.0> [Accessed 5 October 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Asynchronous programming
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/> [Accessed 5 October 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Exception Handling
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/exceptions/exception-handling> [Accessed 5 October 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Microsoft
+ * Date: 2026
+ * Title: Model validation in ASP.NET Core MVC
+ * Type: [Source Code]
+ * Available at: <https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-10.0> [Accessed 5 October 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: MDN contributors
+ * Date: 2026
+ * Title: Window: localStorage property
+ * Type: [Source Code]
+ * Available at: <https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage> [Accessed 5 October 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Marcelo Silva
+ * Date: 2026
+ * Title: AVLTreeST.java
+ * Type: [Source Code]
+ * Available at: <https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AVLTreeST.java.html> [Accessed 12 October 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Robert Sedgewick and Kevin Wayne
+ * Date: 2026
+ * Title: BreadthFirstPaths.java
+ * Type: [Source Code]
+ * Available at: <https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BreadthFirstPaths.java.html> [Accessed 12 October 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: Robert Sedgewick and Kevin Wayne
+ * Date: 2026
+ * Title: LazyPrimMST.java
+ * Type: [Source Code]
+ * Available at: <https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LazyPrimMST.java.html> [Accessed 12 October 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: MDN contributors
+ * Date: 2026
+ * Title: <svg>
+ * Type: [Source Code]
+ * Available at: <https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/svg> [Accessed 12 October 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: MDN contributors
+ * Date: 2026
+ * Title: Page Visibility API
+ * Type: [Source Code]
+ * Available at: <https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API> [Accessed 12 October 2026]
+ **************************************************************************************************************/
+
+/**************************************************************************************************************
+ * Author: MDN contributors
+ * Date: 2026
+ * Title: DOMParser: parseFromString() method
+ * Type: [Source Code]
+ * Available at: <https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/parseFromString> [Accessed 12 October 2026]
+ **************************************************************************************************************/

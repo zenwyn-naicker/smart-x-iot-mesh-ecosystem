@@ -1,0 +1,43 @@
+@model CommandStreamViewModel
+
+<section class="content-section mb-4" aria-labelledby="suggestions-title">
+    <h2 id="suggestions-title">Suggested actions</h2>
+    <p>Across all devices, ranked by repeated behaviour and recency. Review the evidence before applying a command.</p>
+    @if (Model.Suggestions.Count == 0)
+    {
+        <p class="muted-text mb-0">No suggestions yet. Suggestions appear when repeated searches or commands match a currently active condition.</p>
+    }
+    <div class="row g-3">
+        @foreach (var suggestion in Model.Suggestions)
+        {
+            var action = suggestion.Action switch
+            {
+                LearnedAction.TurnOn => "Turn on",
+                LearnedAction.TurnOff => "Turn off",
+                _ => "Inspect device"
+            };
+            <div class="col-12 col-lg-6">
+                <article class="border rounded p-3 h-100 text-break">
+                    <h3 class="h5">@action · @suggestion.DeviceIdentifier</h3>
+                    <p>@suggestion.Reason</p>
+                    <p class="muted-text">@suggestion.EvidenceCount observations · Last observed @suggestion.LastObservedAt.ToUniversalTime().ToString("dd MMM yyyy HH:mm:ss") UTC</p>
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <a asp-controller="Sensors" asp-action="Details" asp-route-id="@suggestion.TargetSensorId"
+                           aria-label="Inspect @suggestion.DeviceIdentifier">Inspect device</a>
+                        @if (suggestion.Action is LearnedAction.TurnOn or LearnedAction.TurnOff)
+                        {
+                            <form asp-action="Execute" method="post" class="command-form"
+                                  asp-route-search="@Model.Filters.Search" asp-route-category="@Model.Filters.Category" asp-route-alert="@Model.Filters.Alert">
+                                <input type="hidden" name="RequestId" value="@Guid.NewGuid()" />
+                                <input type="hidden" name="SensorId" value="@suggestion.TargetSensorId" />
+                                <input type="hidden" name="IsOn" value="@((suggestion.Action == LearnedAction.TurnOn).ToString().ToLowerInvariant())" />
+                                <button class="button button--secondary" type="submit"
+                                        aria-label="Apply suggestion: @action @suggestion.DeviceIdentifier">@action</button>
+                            </form>
+                        }
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+</section>

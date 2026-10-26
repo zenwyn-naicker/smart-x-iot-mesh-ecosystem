@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "About";
+}
+
+<div class="form-layout">
+    <h1>About Smart-X</h1>
+    <p>
+        Smart-X brings device registration, live telemetry and manual device
+        control into one workspace. It helps operators spot unusual readings,
+        investigate disconnected sensors and check whether conditions recover.
+    </p>
+
+    <section class="content-section" aria-labelledby="purpose-title">
+        <h2 id="purpose-title">Our purpose</h2>
+        <p>
+            Created by Zenwyn Naicker, Smart-X supports monitoring in
+            hydroponic facilities, smart grids and
+            automated properties. Simulated devices let you explore these
+            workflows without connecting physical hardware.
+        </p>
+    </section>
+
+    <section class="content-section" aria-labelledby="features-title">
+        <h2 id="features-title">What you can do</h2>
+        <ul>
+            <li>Register sensors, submit readings and attach device logs or configuration files.</li>
+            <li>Monitor live charts and alerts, then compare conditions with your last saved review.</li>
+            <li>Search devices, issue manual commands, undo changes and review suggested actions.</li>
+            <li>View the mesh network, manage connection costs and trace device routes to the gateway.</li>
+        </ul>
+        <a class="button button--primary" asp-controller="Dashboard" asp-action="Index"
+           data-navigation>Open dashboard</a>
+    </section>
+</div>

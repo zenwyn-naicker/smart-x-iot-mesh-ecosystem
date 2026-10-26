@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Gateway";
+}
+
+<section class="hero">
+    <div>
+        <h1>Smart-X IoT Mesh Gateway</h1>
+        <p>
+            Register devices, monitor typed telemetry and investigate
+            anomalies from one management interface.
+        </p>
+
+        <div class="hero-actions">
+            <a class="button button--primary"
+               asp-controller="Sensors"
+               asp-action="Create">
+                Register a sensor
+            </a>
+            <a class="button button--secondary"
+               asp-controller="Dashboard"
+               asp-action="Index">
+                Open dashboard
+            </a>
+        </div>
+    </div>
+
+</section>
+
+<section aria-labelledby="pillars-title">
+    <div class="section-heading">
+        <div>
+            <h2 id="pillars-title">Gateway capabilities</h2>
+            <p>
+                Explore the gateway's core monitoring and management
+                capabilities.
+            </p>
+        </div>
+    </div>
+
+    <div class="pillar-list">
+        <article class="pillar pillar--active">
+            <div class="pillar-number">01</div>
+            <div>
+                <h3>Sensor Data Ingestion and Telemetry</h3>
+                <p>
+                    Register devices, submit readings, attach logs and
+                    investigate telemetry anomalies.
+                </p>
+                <a asp-controller="Dashboard"
+                   asp-action="Index">
+                    View telemetry dashboard
+                </a>
+            </div>
+        </article>
+
+        <article class="pillar pillar--active">
+            <div class="pillar-number">02</div>
+            <div>
+                <h3>Real-Time Command Stream and History</h3>
+                <p>
+                    Monitor live device states, issue commands, undo
+                    changes and review suggested actions.
+                </p>
+                <a asp-controller="CommandStream" asp-action="Index" data-navigation>Open command stream</a>
+            </div>
+        </article>
+
+        <article class="pillar pillar--active">
+            <div class="pillar-number">03</div>
+            <div>
+                <h3>Network Topology and Mesh Routing</h3>
+                <p>
+                    View device availability, manage weighted connections
+                    and trace routes to the gateway.
+                </p>
+                <a asp-controller="Topology" asp-action="Index" data-navigation>Open network topology</a>
+            </div>
+        </article>
+    </div>
+</section>

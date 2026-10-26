@@ -1,0 +1,77 @@
+@SmartXApi = http://localhost:5082
+
+@environmentalSensorId = f2daa8a0-a26c-4ba0-806b-8710d3abe762
+@powerSensorId = 58b32e04-95d5-4072-8b53-73986e4c3087
+@actuatorSensorId = 8197ae57-e575-4dd4-8bad-4d19e4c81d36
+
+GET {{SmartXApi}}/health
+Accept: application/json
+
+###
+
+GET {{SmartXApi}}/api/sensors
+Accept: application/json
+
+###
+
+POST {{SmartXApi}}/api/sensors
+Content-Type: application/json
+
+{
+  "deviceIdentifier": "ESP32-ENV-99",
+  "facility": "Hydroponics Facility",
+  "zone": "Growing Zone A",
+  "subZone": "Bed 4",
+  "node": "Climate Node",
+  "category": "Environmental"
+}
+
+###
+
+POST {{SmartXApi}}/api/telemetry/environmental
+Content-Type: application/json
+
+{
+  "sensorId": "{{environmentalSensorId}}",
+  "value": 24.7,
+  "timestamp": "2026-09-01T10:00:00+02:00",
+  "unit": "°C"
+}
+
+###
+
+POST {{SmartXApi}}/api/telemetry/power
+Content-Type: application/json
+
+{
+  "sensorId": "{{powerSensorId}}",
+  "value": 1800,
+  "timestamp": "2026-09-01T10:00:00+02:00",
+  "unit": "W"
+}
+
+###
+
+POST {{SmartXApi}}/api/telemetry/actuator
+Content-Type: application/json
+
+{
+  "sensorId": "{{actuatorSensorId}}",
+  "value": true,
+  "timestamp": "2026-09-01T10:00:00+02:00",
+  "unit": "state"
+}
+
+###
+
+POST {{SmartXApi}}/api/simulation/seed?packetsPerSensor=250
+
+###
+
+GET {{SmartXApi}}/api/dashboard
+Accept: application/json
+
+###
+
+GET {{SmartXApi}}/api/telemetry/power/aggregate
+Accept: application/json

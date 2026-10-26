@@ -1,0 +1,71 @@
+@model TelemetryFormViewModel
+
+@{
+    ViewData["Title"] = "Telemetry ingestion";
+}
+
+<div class="form-layout">
+    <section>
+        <h1>Simulate telemetry</h1>
+        <p>
+            Submit a telemetry reading through the Smart-X gateway.
+        </p>
+
+        @if (Model.Sensors.Count == 0 && !Model.SensorsUnavailable)
+        {
+            <div class="notice notice--warning">
+                Register a sensor before submitting telemetry.
+            </div>
+
+            <a class="button button--primary"
+               asp-controller="Sensors"
+               asp-action="Create">
+                Register sensor
+            </a>
+        }
+        else
+        {
+            <form method="post" class="app-form" data-preserve-state>
+                <div asp-validation-summary="ModelOnly"
+                     class="validation-summary"></div>
+
+                <div class="field">
+                    <label asp-for="SensorId"></label>
+                    <select asp-for="SensorId"
+                            id="sensorSelect">
+                        <option value="">Select a sensor</option>
+                        @if (Model.SensorsUnavailable && Model.SensorId != Guid.Empty)
+                        {
+                            <option value="@Model.SensorId">Previously selected sensor (unavailable)</option>
+                        }
+                        @foreach (var sensor in Model.Sensors)
+                        {
+                            <option value="@sensor.Id"
+                                    data-category="@sensor.Category">
+                                @sensor.DeviceIdentifier
+                                · @sensor.Category
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="SensorId"></span>
+                </div>
+
+                <div class="field">
+                    <label asp-for="Value"></label>
+                    <input asp-for="Value"
+                           id="telemetryValue"
+                           placeholder="Select a sensor first" />
+                    <span asp-validation-for="Value"></span>
+                    <small id="valueHelp">
+                        The expected type changes with the sensor.
+                    </small>
+                </div>
+
+                <button class="button button--primary"
+                        type="submit">
+                    Send telemetry
+                </button>
+            </form>
+        }
+    </section>
+</div>

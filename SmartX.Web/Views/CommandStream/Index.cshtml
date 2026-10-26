@@ -1,0 +1,21 @@
+@model CommandStreamViewModel
+@{
+    ViewData["Title"] = "Command stream";
+}
+
+<div class="section-heading dashboard-heading">
+    <div>
+        <h1>Command stream</h1>
+        <p>Device states, active alerts and recent telemetry history.</p>
+    </div>
+    <a id="refreshCommandStream" class="button button--secondary" asp-action="Index"
+       asp-route-search="@Model.Filters.Search" asp-route-category="@Model.Filters.Category"
+       asp-route-alert="@Model.Filters.Alert">Refresh</a>
+</div>
+
+<partial name="_Filters" model="Model.Filters" />
+
+<p id="commandStreamStatus" class="muted-text" role="status">Use Refresh to update the stream.</p>
+<div id="commandStream" data-url="@Url.Action("Data", new { Model.Filters.Search, Model.Filters.Category, Model.Filters.Alert })" data-loaded="@(Model.Error is null ? "true" : "false")">
+    <partial name="_Stream" model="Model" />
+</div>

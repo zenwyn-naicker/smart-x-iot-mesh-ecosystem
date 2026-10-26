@@ -1,0 +1,44 @@
+@model CommandStreamViewModel
+
+<section class="content-section mb-4" aria-labelledby="command-history-title">
+    <div class="panel-heading flex-wrap gap-3">
+        <div>
+            <h2 id="command-history-title">Command history</h2>
+            <p>Latest 100 attempts across all devices, newest first. Undo restores the latest command across all devices, including those hidden by filters.</p>
+        </div>
+        <form asp-action="Undo" method="post" class="command-form"
+              asp-route-search="@Model.Filters.Search" asp-route-category="@Model.Filters.Category" asp-route-alert="@Model.Filters.Alert">
+            <input type="hidden" name="RequestId" value="@Guid.NewGuid()" />
+            <button class="button button--secondary" type="submit">Undo latest command</button>
+        </form>
+    </div>
+    @if (Model.CommandHistory.Count == 0)
+    {
+        <p class="muted-text mb-0">No commands have been issued yet.</p>
+    }
+    else
+    {
+        <div class="table-shell" tabindex="0" role="region" aria-label="Command history, scroll horizontally on small screens">
+            <table class="data-table">
+                <thead><tr><th scope="col">Time (UTC)</th><th scope="col">Device</th><th scope="col">Action</th><th scope="col">Result</th></tr></thead>
+                <tbody>
+                    @foreach (var command in Model.CommandHistory)
+                    {
+                        <tr>
+                            <td>@command.ExecutedAt.ToUniversalTime().ToString("dd MMM HH:mm:ss")</td>
+                            <td class="text-break">@(Model.DeviceNames.TryGetValue(command.SensorId, out var name) ? name : command.SensorId.ToString())</td>
+                            <td>
+                                @(command.UndoesCommandId is null ? "Manual command" : "Undo"):
+                                @(command.PreviousState is null ? "Unknown" : command.PreviousState.Value ? "On" : "Off") → @(command.RequestedState ? "On" : "Off")
+                            </td>
+                            <td>
+                                <strong>@(command.Outcome == DeviceCommandOutcome.NoChange ? "Unchanged" : command.Outcome.ToString())</strong>
+                                <div>@command.Message</div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

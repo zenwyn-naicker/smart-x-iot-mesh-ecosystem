@@ -1,0 +1,64 @@
+﻿@model IReadOnlyList<SensorViewModel>
+
+@{
+    ViewData["Title"] = "Sensors";
+}
+
+<div class="section-heading">
+    <div>
+        <h1>Registered sensors</h1>
+        <p>
+            Devices currently registered with Smart-X.
+        </p>
+    </div>
+    <a class="button button--primary"
+       asp-action="Create">
+        Register sensor
+    </a>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="empty-state">
+        <h2>No sensors registered</h2>
+        <p>
+            Register a device manually or seed the dashboard with
+            demonstration data.
+        </p>
+    </div>
+}
+else
+{
+    <div class="table-shell">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Identifier</th>
+                    <th>Category</th>
+                    <th>Deployment</th>
+                    <th>Last heartbeat</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sensor in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Details"
+                               asp-route-id="@sensor.Id">
+                                <strong>@sensor.DeviceIdentifier</strong>
+                            </a>
+                        </td>
+                        <td>@(sensor.Category == SensorCategory.PowerConsumption ? "Power consumption" : sensor.Category.ToString())</td>
+                        <td>@sensor.DeploymentPath</td>
+                        <td>
+                            @(sensor.LastHeartbeat?.ToLocalTime()
+                                .ToString("dd MMM HH:mm:ss")
+                                ?? "Not received")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

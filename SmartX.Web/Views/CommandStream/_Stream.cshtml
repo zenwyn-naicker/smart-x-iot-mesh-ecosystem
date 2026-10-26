@@ -1,0 +1,116 @@
+@model CommandStreamViewModel
+@{
+    var devices = Model.Devices.ToDictionary(device => device.Id);
+}
+
+@if (Model.Error is not null)
+{
+    <div class="notice notice--error" role="alert">@Model.Error</div>
+}
+else
+{
+    <p class="muted-text">Snapshot: @Model.GeneratedAt.ToUniversalTime().ToString("dd MMM yyyy HH:mm:ss") UTC</p>
+    <partial name="_Suggestions" model="Model" />
+    <section class="content-section mb-4" aria-labelledby="stream-devices-title">
+        <h2 id="stream-devices-title">Devices <span class="muted-text">(@Model.Devices.Count)</span></h2>
+        @if (Model.Devices.Count == 0)
+        {
+            @if (Model.Filters.HasFilters)
+            {
+                <p>No devices match these filters. Try another search or clear the filters.</p>
+            }
+            else
+            {
+                <p>No devices registered yet. <a asp-controller="Sensors" asp-action="Create">Register a sensor</a> to get started.</p>
+            }
+        }
+        <div class="row g-3">
+            @foreach (var device in Model.Devices)
+            {
+                <div class="col-12 col-lg-6">
+                    <article class="border rounded p-3 h-100 text-break">
+                        <h3 class="h5"><a asp-controller="Sensors" asp-action="Details" asp-route-id="@device.Id">@device.DeviceIdentifier</a></h3>
+                        <p><span class="status status--@device.Status.ToString().ToLowerInvariant()">@device.Status</span></p>
+                        <p>@(device.Category == SensorCategory.PowerConsumption ? "Power consumption" : device.Category.ToString()) · @device.DeploymentPath</p>
+                        @if (device.Category == SensorCategory.Actuator)
+                        {
+                            <p>Actuator state: <strong>@(device.ActuatorState is null ? "Unknown" : device.ActuatorState.IsOn ? "On" : "Off")</strong></p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                @foreach (var isOn in new[] { true, false })
+                                {
+                                    <form asp-action="Execute" method="post" class="command-form"
+                                          asp-route-search="@Model.Filters.Search" asp-route-category="@Model.Filters.Category" asp-route-alert="@Model.Filters.Alert">
+                                        <input type="hidden" name="RequestId" value="@Guid.NewGuid()" />
+                                        <input type="hidden" name="SensorId" value="@device.Id" />
+                                        <input type="hidden" name="IsOn" value="@isOn.ToString().ToLowerInvariant()" />
+                                        <button class="button button--secondary" type="submit"
+                                                disabled="@(device.Status == SensorStatus.Disconnected || device.ActuatorState is null || device.ActuatorState.IsOn == isOn)"
+                                                aria-label="Turn @device.DeviceIdentifier @(isOn ? "on" : "off")">Turn @(isOn ? "on" : "off")</button>
+                                    </form>
+                                }
+                            </div>
+                            @if (device.Status == SensorStatus.Disconnected || device.ActuatorState is null)
+                            {
+                                <p class="muted-text">Commands require a connected device with a known state.</p>
+                            }
+                        }
+                        <p class="muted-text mb-0">Last heartbeat: @(device.LastHeartbeat is null ? "Not received" : device.LastHeartbeat.Value.ToUniversalTime().ToString("dd MMM HH:mm:ss") + " UTC")</p>
+                    </article>
+                </div>
+            }
+        </div>
+    </section>
+
+    <partial name="_CommandHistory" model="Model" />
+
+    <section class="content-section mb-4" aria-labelledby="stream-alerts-title">
+        <h2 id="stream-alerts-title">Active alerts <span class="muted-text">(@Model.ActiveIssues.Count)</span></h2>
+        @if (Model.ActiveIssues.Count == 0)
+        {
+            <p class="muted-text mb-0">No active alerts.</p>
+        }
+        @foreach (var issue in Model.ActiveIssues)
+        {
+            <article class="border rounded p-3 mb-3 text-break">
+                <h3 class="h5">@issue.DeviceIdentifier · @issue.IssueType</h3>
+                <p>@issue.Message</p>
+                <p class="muted-text mb-0">@issue.Severity · @issue.Occurrences occurrence(s) · Last seen @issue.LastSeen.ToUniversalTime().ToString("dd MMM HH:mm:ss") UTC</p>
+            </article>
+        }
+    </section>
+
+    <section class="content-section" aria-labelledby="stream-history-title">
+        <h2 id="stream-history-title">Recent telemetry</h2>
+        <p class="muted-text">Up to 200 readings, ordered from oldest to newest. Times are UTC.</p>
+        @if (Model.Readings.Count == 0)
+        {
+            @if (Model.Filters.HasFilters)
+            {
+                <p>No telemetry is available for the selected devices.</p>
+            }
+            else
+            {
+                <p>No telemetry received yet. <a asp-controller="Telemetry" asp-action="Index">Send a reading</a> or start the simulation from the dashboard.</p>
+            }
+        }
+        else
+        {
+            <div class="table-shell" tabindex="0" role="region" aria-label="Telemetry history, scroll horizontally on small screens">
+                <table class="data-table">
+                    <thead><tr><th scope="col">Time (UTC)</th><th scope="col">Device</th><th scope="col">Reading</th><th scope="col">Status</th></tr></thead>
+                    <tbody>
+                        @foreach (var reading in Model.Readings)
+                        {
+                            <tr>
+                                <td>@reading.Timestamp.ToUniversalTime().ToString("dd MMM HH:mm:ss")</td>
+                                <td class="text-break">@(devices.TryGetValue(reading.SensorId, out var device) ? device.DeviceIdentifier : reading.SensorId.ToString())</td>
+                                <td>@reading.Value @reading.Unit</td>
+                                <td>@(reading.IsAnomaly ? reading.AnomalyMessage ?? "Anomaly" : "Normal")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+}

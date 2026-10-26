@@ -1,0 +1,33 @@
+@model CommandStreamFilter
+
+<section class="content-section mb-4" aria-labelledby="stream-filters-title">
+    <h2 id="stream-filters-title">Find devices</h2>
+    <form asp-action="Search" method="post" class="row g-3 align-items-end" data-preserve-state>
+        <div class="col-12 col-lg-5">
+            <label asp-for="Search">Device or location</label>
+            <input asp-for="Search" class="form-control" maxlength="200" placeholder="Identifier, facility, zone or node" />
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <label asp-for="Category">Category</label>
+            <select asp-for="Category" class="form-select">
+                <option value="">All categories</option>
+                <option value="Environmental">Environmental</option>
+                <option value="PowerConsumption">Power consumption</option>
+                <option value="Actuator">Actuator</option>
+            </select>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-4">
+            <label asp-for="Alert">Alerts</label>
+            <select asp-for="Alert" class="form-select">
+                <option value="All">All devices</option>
+                <option value="Active">Any active alert</option>
+                <option value="Telemetry">Telemetry alerts</option>
+                <option value="Disconnected">Disconnected devices</option>
+            </select>
+        </div>
+        <div class="col-12 d-flex flex-wrap gap-3">
+            <button class="button button--primary" type="submit">Apply filters</button>
+            <a class="button button--secondary" asp-action="Index" data-reset-state>Clear filters</a>
+        </div>
+    </form>
+</section>

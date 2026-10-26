@@ -1,0 +1,37 @@
+@model AttachmentPreviewViewModel
+
+@{
+    ViewData["Title"] = "Attachment preview";
+}
+
+<div class="section-heading">
+    <div>
+        <h1>Attachment preview</h1>
+        <p class="attachment-filename">@Model.FileName</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="button button--secondary" asp-action="Details" asp-route-id="@Model.SensorId">Back to sensor</a>
+        <a class="button button--primary" asp-action="Download" asp-route-attachmentId="@Model.AttachmentId">Download</a>
+    </div>
+</div>
+
+<section class="content-section" aria-label="File preview">
+    @if (Model.ImageDataUrl is not null)
+    {
+        <object class="attachment-preview-image" data="@Model.ImageDataUrl" type="@(Model.ImageDataUrl.StartsWith("data:image/png;") ? "image/png" : "image/jpeg")" aria-label="@Model.FileName">
+            <p>This image could not be displayed. Download the file to view it.</p>
+        </object>
+    }
+    else if (Model.Text is not null)
+    {
+        @if (Model.IsTruncated)
+        {
+            <p class="muted-text">Showing the first 100,000 characters. Download the file to view its full contents.</p>
+        }
+        <pre class="attachment-preview-text" tabindex="0" aria-label="File contents">@Model.Text</pre>
+    }
+    else
+    {
+        <p>A preview is unavailable for this file. Download it to view its contents.</p>
+    }
+</section>

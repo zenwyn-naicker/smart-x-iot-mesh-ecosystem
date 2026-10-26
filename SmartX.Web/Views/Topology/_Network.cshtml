@@ -1,0 +1,67 @@
+@model TopologyViewModel
+@{
+    var nodes = Model.Nodes.Values.OrderByDescending(node => node.IsGateway).ThenBy(node => node.Identifier).ToList();
+    var radius = Math.Max(180, nodes.Count * 32);
+    var width = nodes.Count == 1 ? 280 : radius * 2 + 320;
+    var height = nodes.Count == 1 ? 240 : radius * 2 + 180;
+    var positions = nodes.Select((node, index) =>
+    {
+        var angle = -Math.PI / 2 + index * 2 * Math.PI / Math.Max(1, nodes.Count);
+        return (node.Id, X: nodes.Count == 1 ? width / 2 : (int)Math.Round(width / 2d + radius * Math.Cos(angle)),
+            Y: nodes.Count == 1 ? height / 2 : (int)Math.Round(height / 2d + radius * Math.Sin(angle)));
+    }).ToDictionary(position => position.Id);
+    var routeNodes = Model.Route?.NodeIds.ToHashSet() ?? new HashSet<Guid>();
+    var routeLinks = new HashSet<(Guid, Guid)>();
+    if (Model.Route is { } route)
+    {
+        for (var index = 1; index < route.NodeIds.Count; index++)
+        {
+            routeLinks.Add((route.NodeIds[index - 1], route.NodeIds[index]));
+            routeLinks.Add((route.NodeIds[index], route.NodeIds[index - 1]));
+        }
+    }
+}
+
+<section class="content-section" aria-labelledby="networkHeading">
+    <h2 id="networkHeading">Mesh network</h2>
+    <p id="networkDescription" class="muted-text">Numbers show connection costs. Dashed lines and outlines indicate unavailable connections and offline devices.</p>
+    @if (nodes.Count > 1)
+    {
+        <p class="muted-text">On smaller screens, scroll horizontally to see the full network.</p>
+    }
+    <div class="network-shell" tabindex="0" role="region" aria-label="Scrollable network diagram">
+        <svg class="network-diagram @(nodes.Count == 1 ? "network-diagram--single" : "")" viewBox="0 0 @width @height" role="group" aria-labelledby="networkHeading networkDescription">
+            @foreach (var link in Model.Links)
+            {
+                var from = positions[link.FromNodeId];
+                var to = positions[link.ToNodeId];
+                var available = Model.Nodes[link.FromNodeId].IsAvailable && Model.Nodes[link.ToNodeId].IsAvailable;
+                var labelOffset = from.X + to.X == width && from.Y + to.Y == height ? 65 : 50;
+                var x = (from.X * (100 - labelOffset) + to.X * labelOffset) / 100;
+                var y = (from.Y * (100 - labelOffset) + to.Y * labelOffset) / 100;
+                <g class="network-link @(available ? "" : "network-link--offline") @(routeLinks.Contains((link.FromNodeId, link.ToNodeId)) ? "network-link--route" : "")">
+                    <title>@Model.Nodes[link.FromNodeId].Identifier to @Model.Nodes[link.ToNodeId].Identifier: cost @link.Cost</title>
+                    <line x1="@from.X" y1="@from.Y" x2="@to.X" y2="@to.Y" />
+                    <rect x="@(x - 38)" y="@(y - 14)" width="76" height="28" rx="8" />
+                    <text x="@x" y="@(y + 5)">@link.Cost.ToString("G4")</text>
+                </g>
+            }
+            @foreach (var node in nodes)
+            {
+                var position = positions[node.Id];
+                var label = node.Identifier.Length > 24 ? node.Identifier[..21] + "…" : node.Identifier;
+                <g class="network-node @(node.IsAvailable ? "" : "network-node--offline") @(routeNodes.Contains(node.Id) ? "network-node--route" : "")">
+                    <title>@node.Identifier: @(node.IsAvailable ? "Available" : "Offline")</title>
+                    <circle cx="@position.X" cy="@position.Y" r="30" />
+                    @if (node.IsGateway)
+                    {
+                        <circle class="network-gateway" cx="@position.X" cy="@position.Y" r="23" />
+                    }
+                    <text class="network-node-role" x="@position.X" y="@(position.Y + 5)">@(node.IsGateway ? "G" : "S")</text>
+                    <text x="@position.X" y="@(position.Y + 51)">@label</text>
+                    <text class="network-node-status" x="@position.X" y="@(position.Y + 70)">@(node.IsAvailable ? "Available" : "Offline")</text>
+                </g>
+            }
+        </svg>
+    </div>
+</section>

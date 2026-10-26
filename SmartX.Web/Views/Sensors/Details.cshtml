@@ -1,0 +1,114 @@
+﻿@model SensorDetailsPageViewModel
+
+@{
+    ViewData["Title"] = Model.Sensor.DeviceIdentifier;
+}
+
+<a class="back-link"
+   asp-action="Index">← Back to sensors</a>
+
+<div class="section-heading">
+    <div>
+        <h1>@Model.Sensor.DeviceIdentifier</h1>
+        <p>@Model.Sensor.DeploymentPath</p>
+    </div>
+    <a class="button button--secondary" asp-action="History" asp-route-id="@Model.Sensor.Id">View history</a>
+</div>
+
+<div class="details-grid">
+    <section class="detail-panel">
+        <h2>Sensor profile</h2>
+        <dl class="definition-list">
+            <div>
+                <dt>Identifier</dt>
+                <dd>@Model.Sensor.DeviceIdentifier</dd>
+            </div>
+            <div>
+                <dt>Category</dt>
+                <dd>@(Model.Sensor.Category == SensorCategory.PowerConsumption ? "Power consumption" : Model.Sensor.Category.ToString())</dd>
+            </div>
+            <div>
+                <dt>Deployment</dt>
+                <dd>@Model.Sensor.DeploymentPath</dd>
+            </div>
+            <div>
+                <dt>Last heartbeat</dt>
+                <dd>
+                    @(Model.Sensor.LastHeartbeat?.ToLocalTime()
+                        .ToString("dd MMM yyyy HH:mm:ss")
+                        ?? "Not received")
+                </dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="detail-panel">
+        <h2>Attach configuration or log</h2>
+        <p>
+            Allowed: JPG, PNG, TXT, LOG, JSON and CFG.
+            Maximum size: 10 MB.
+        </p>
+
+        <form asp-action="Upload"
+              asp-route-id="@Model.Sensor.Id"
+              method="post"
+              enctype="multipart/form-data"
+              class="upload-form">
+            <label for="attachmentFile">Choose a file</label>
+            <input type="file" id="attachmentFile"
+                   name="file"
+                   aria-describedby="attachmentError"
+                   data-max-size="10485760"
+                   required
+                   accept=".jpg,.jpeg,.png,.txt,.log,.json,.cfg" />
+            <span id="attachmentError" class="text-danger" role="alert"></span>
+            <button class="button button--primary"
+                    type="submit">
+                Encrypt and upload
+            </button>
+        </form>
+    </section>
+</div>
+
+<section class="content-section">
+    <h2>Encrypted attachments</h2>
+
+    @if (Model.Attachments.Count == 0)
+    {
+        <p class="muted-text">
+            No files are attached to this sensor.
+        </p>
+    }
+    else
+    {
+        <div class="attachment-list">
+            @foreach (var attachment in Model.Attachments)
+            {
+                <div class="attachment-row">
+                    <div>
+                        <strong>@attachment.FileName</strong>
+                        <small>
+                            @Math.Ceiling(attachment.Length / 1024d) KB
+                            ·
+                            @(attachment.UploadedAt.ToLocalTime()
+                                .ToString("dd MMM HH:mm"))
+                        </small>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a class="button button--secondary"
+                           asp-action="Preview"
+                           asp-route-id="@Model.Sensor.Id"
+                           asp-route-attachmentId="@attachment.Id">
+                            View
+                        </a>
+                        <a class="button button--secondary"
+                           asp-action="Download"
+                           asp-route-attachmentId="@attachment.Id">
+                            Download
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</section>

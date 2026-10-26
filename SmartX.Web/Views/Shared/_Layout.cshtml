@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] | Smart-X</title>
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+</head>
+<body>
+    <header class="app-header">
+        <nav class="container app-navigation"
+             aria-label="Main navigation">
+            <a class="brand"
+               asp-controller="Home"
+               asp-action="Index">
+                Smart-X
+            </a>
+
+            <div class="nav-links">
+                <a asp-controller="Home"
+                   asp-action="Index">Gateway</a>
+                <a asp-controller="Sensors"
+                   asp-action="Index">Sensors</a>
+                <a asp-controller="Telemetry"
+                   asp-action="Index">Ingestion</a>
+                <a asp-controller="Dashboard"
+                   asp-action="Index">Dashboard</a>
+                <a asp-controller="CommandStream"
+                   asp-action="Index">Command stream</a>
+                <a asp-controller="Topology"
+                   asp-action="Index">Network topology</a>
+                <a asp-controller="Home"
+                   asp-action="About">About</a>
+            </div>
+        </nav>
+    </header>
+
+    <p id="navigationStatus" class="container mt-3" role="status" hidden></p>
+    <main id="pageContent" class="container page-shell">
+        @if (TempData["Success"] is string success)
+        {
+            <div class="notice notice--success"
+                 role="status">
+                @success
+            </div>
+        }
+
+        @if (TempData["Error"] is string error)
+        {
+            <div class="notice notice--error"
+                 role="alert">
+                @error
+            </div>
+        }
+
+        @RenderBody()
+    </main>
+
+    <footer class="container app-footer">
+        Smart-X IoT Gateway · Device monitoring and telemetry
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/dashboard-review.js" asp-append-version="true"></script>
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+    <script src="~/js/simulation.js" asp-append-version="true"></script>
+    <script src="~/js/command-stream.js" asp-append-version="true"></script>
+    <script src="~/js/topology.js" asp-append-version="true"></script>
+    <script src="~/js/telemetry.js" asp-append-version="true"></script>
+    <script src="~/js/attachments.js" asp-append-version="true"></script>
+    <script src="~/js/module-state.js" asp-append-version="true"></script>
+    <script src="~/js/navigation.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

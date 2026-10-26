@@ -1,0 +1,73 @@
+﻿@model RegisterSensorViewModel
+
+@{
+    ViewData["Title"] = "Register sensor";
+}
+
+<div class="form-layout">
+    <section>
+        <a class="back-link"
+           asp-action="Index">← Back to sensors</a>
+
+        <h1>Register a sensor</h1>
+        <p>
+            Register an ESP32 or another uniquely identified IoT
+            device with the Smart-X gateway.
+        </p>
+
+        <form method="post" class="app-form" data-preserve-state>
+            <div asp-validation-summary="ModelOnly"
+                 class="validation-summary"></div>
+
+            <div class="field">
+                <label asp-for="DeviceIdentifier"></label>
+                <input asp-for="DeviceIdentifier"
+                       placeholder="ESP32-ENV-01" />
+                <span asp-validation-for="DeviceIdentifier"></span>
+            </div>
+
+            <div class="field">
+                <label asp-for="Category"></label>
+                <select asp-for="Category"
+                        asp-items="Html.GetEnumSelectList<SensorCategory>()">
+                </select>
+                <span asp-validation-for="Category"></span>
+            </div>
+
+            <div class="field-grid">
+                <div class="field">
+                    <label asp-for="Facility"></label>
+                    <input asp-for="Facility"
+                           placeholder="Hydroponics Facility" />
+                    <span asp-validation-for="Facility"></span>
+                </div>
+
+                <div class="field">
+                    <label asp-for="Zone"></label>
+                    <input asp-for="Zone"
+                           placeholder="Growing Zone A" />
+                    <span asp-validation-for="Zone"></span>
+                </div>
+
+                <div class="field">
+                    <label asp-for="SubZone"></label>
+                    <input asp-for="SubZone"
+                           placeholder="Bed 1" />
+                    <span asp-validation-for="SubZone"></span>
+                </div>
+
+                <div class="field">
+                    <label asp-for="Node"></label>
+                    <input asp-for="Node"
+                           placeholder="Climate Node" />
+                    <span asp-validation-for="Node"></span>
+                </div>
+            </div>
+
+            <button class="button button--primary"
+                    type="submit">
+                Register sensor
+            </button>
+        </form>
+    </section>
+</div>

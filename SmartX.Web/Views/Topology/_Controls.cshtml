@@ -1,0 +1,84 @@
+@model TopologyViewModel
+@{
+    var nodes = Model.Nodes.Values.OrderByDescending(node => node.IsGateway).ThenBy(node => node.Identifier).ToList();
+    var demoNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "ESP32-ENV-01", "ESP32-PWR-01", "ESP32-ACT-01" };
+    var demoNodes = nodes.Where(node => demoNames.Contains(node.Identifier)).ToList();
+}
+
+<section class="content-section" aria-labelledby="demoHeading">
+    <h2 id="demoHeading">Demo controls</h2>
+    <div data-topology-region="simulation">
+    <p>Simulation: <strong>@(Model.Simulation?.IsRunning == true ? "Running" : "Stopped")</strong></p>
+    @if (Model.Simulation?.Error is { } error)
+    {
+        <p class="notice notice--error" role="alert">@error</p>
+    }
+    </div>
+    <form asp-action="Simulation" method="post" class="d-flex flex-wrap gap-2 mb-3">
+        <input type="hidden" name="search" value="@Model.Search" />
+        <button class="button button--secondary" name="operation" value="load">Load samples</button>
+        <button class="button button--primary" name="operation" value="start">Start simulation</button>
+        <button class="button button--secondary" name="operation" value="stop">Stop simulation</button>
+    </form>
+    <p class="muted-text">Load samples to create demo connections. Start simulation to send live readings. Paused devices become offline after 30 seconds.</p>
+    @if (demoNodes.Count > 0)
+    {
+        <form asp-action="PauseSensor" method="post" class="network-search">
+            <input type="hidden" name="search" value="@Model.Search" />
+            <div class="field">
+                <label for="demoSensor">Demo device</label>
+                <select id="demoSensor" name="sensorId">
+                    @foreach (var node in demoNodes)
+                    {
+                        <option value="@node.Id">@node.Identifier @(Model.Simulation?.PausedSensorIds.Contains(node.Id) == true ? "(paused)" : "")</option>
+                    }
+                </select>
+            </div>
+            <button class="button button--secondary" name="paused" value="true">Pause device</button>
+            <button class="button button--secondary" name="paused" value="false">Resume device</button>
+        </form>
+    }
+</section>
+
+@if (nodes.Count > 1)
+{
+    <section class="content-section" aria-labelledby="connectionHeading">
+        <h2 id="connectionHeading">Manage connections</h2>
+        <p class="muted-text">Connections work in both directions. Lower costs are preferred when building the minimum spanning tree.</p>
+        <form asp-action="ChangeLink" method="post">
+            <input type="hidden" name="search" value="@Model.Search" />
+            <div class="field-grid">
+                <div class="field">
+                    <label for="FirstNodeId">First node</label>
+                    <select id="FirstNodeId" name="FirstNodeId" required>
+                        <option value="">Select a node</option>
+                        @foreach (var node in nodes)
+                        {
+                            <option value="@node.Id">@node.Identifier</option>
+                        }
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="SecondNodeId">Second node</label>
+                    <select id="SecondNodeId" name="SecondNodeId" required>
+                        <option value="">Select a node</option>
+                        @foreach (var node in nodes)
+                        {
+                            <option value="@node.Id">@node.Identifier</option>
+                        }
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="Cost">Connection cost</label>
+                    <input id="Cost" name="Cost" type="number" step="any" min="0" max="1000000" value="1" required aria-describedby="costHint" />
+                    <small id="costHint">Greater than zero, up to 1,000,000. Required when adding or updating a connection.</small>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <button class="button button--primary" name="operation" value="add">Add connection</button>
+                <button class="button button--secondary" name="operation" value="update">Update cost</button>
+                <button class="button button--secondary" name="operation" value="remove" formnovalidate>Remove connection</button>
+            </div>
+        </form>
+    </section>
+}

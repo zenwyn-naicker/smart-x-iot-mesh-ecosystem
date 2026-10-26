@@ -1,0 +1,200 @@
+﻿@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Telemetry dashboard";
+}
+
+<div class="section-heading dashboard-heading">
+    <div>
+        <h1>Telemetry dashboard</h1>
+        <p>
+            Monitor anomalies, telemetry spikes and device
+            disconnects.
+        </p>
+    </div>
+
+    <form asp-action="Seed" method="post">
+        <button class="button button--secondary"
+                type="submit">
+            Load sample telemetry
+        </button>
+    </form>
+</div>
+
+<nav class="dashboard-shortcuts" aria-label="Dashboard shortcuts">
+    <a class="button button--secondary" asp-controller="Sensors" asp-action="Create"
+       data-navigation>Register a sensor</a>
+    <a class="button button--secondary" asp-controller="Sensors" asp-action="Index"
+       data-navigation>View sensors</a>
+    <a class="button button--secondary" asp-controller="Telemetry" asp-action="Index"
+       data-navigation>Submit telemetry</a>
+    <a class="button button--secondary" asp-controller="CommandStream" asp-action="Index"
+       data-navigation>Open command stream</a>
+    <a class="button button--secondary" asp-controller="Topology" asp-action="Index"
+       data-navigation>Open network topology</a>
+</nav>
+
+<section class="content-section review-panel" aria-labelledby="review-title">
+    <div class="panel-heading">
+        <div>
+            <h2 id="review-title">Since your last review</h2>
+            <p>Compare current issues with your saved review. Reviewing does not clear alerts.</p>
+        </div>
+        <button id="markReviewed" class="button button--primary" type="button" disabled>
+            Mark current state as reviewed
+        </button>
+    </div>
+    <p id="reviewStatus" class="muted-text" role="status">Loading review…</p>
+    <div id="reviewGroups" class="review-grid" hidden>
+        <section aria-labelledby="review-new-title">
+            <h3 id="review-new-title">New <span id="reviewNewCount">0</span></h3>
+            <ul id="reviewNewIssues" class="review-list"></ul>
+        </section>
+        <section aria-labelledby="review-ongoing-title">
+            <h3 id="review-ongoing-title">Ongoing <span id="reviewOngoingCount">0</span></h3>
+            <ul id="reviewOngoingIssues" class="review-list"></ul>
+        </section>
+        <section aria-labelledby="review-recovered-title">
+            <h3 id="review-recovered-title">Recovered <span id="reviewRecoveredCount">0</span></h3>
+            <ul id="reviewRecoveredIssues" class="review-list"></ul>
+        </section>
+    </div>
+</section>
+
+<section class="content-section mb-4" aria-labelledby="simulation-title">
+    <h2 id="simulation-title">Live device simulation</h2>
+    <p id="simulationStatus" role="status">Checking simulation status…</p>
+    <div class="d-flex flex-wrap align-items-end gap-3">
+        <form asp-action="StartSimulation" method="post" class="d-flex flex-wrap align-items-end gap-3">
+            <div>
+                <label for="readingsPerSecond">Readings per device per second</label>
+                <input id="readingsPerSecond" name="readingsPerSecond" type="number"
+                       class="form-control" min="1" max="20" value="1" required data-preserve-state />
+            </div>
+            <button class="button button--primary" type="submit">Start / update simulation</button>
+        </form>
+        <form asp-action="StopSimulation" method="post">
+            <button class="button button--secondary" type="submit">Stop simulation</button>
+        </form>
+    </div>
+    <p class="muted-text mt-3 mb-0">Simulates three demo devices and continues when you switch pages. Actual throughput depends on API capacity.</p>
+</section>
+
+<section class="metric-strip"
+         aria-label="Gateway status summary">
+    <div>
+        <span>Total sensors</span>
+        <strong id="totalCount">@Model.TotalSensors</strong>
+    </div>
+    <div>
+        <span>Connected</span>
+        <strong id="connectedCount">
+            @Model.ConnectedSensors
+        </strong>
+    </div>
+    <div>
+        <span>Warnings</span>
+        <strong id="warningCount">
+            @Model.WarningSensors
+        </strong>
+    </div>
+    <div>
+        <span>Disconnected</span>
+        <strong id="disconnectedCount">
+            @Model.DisconnectedSensors
+        </strong>
+    </div>
+    <div>
+        <span>Aggregate power</span>
+        <strong>
+            <span id="powerCount">
+                @Model.AggregatePowerWatts
+            </span> W
+        </strong>
+    </div>
+</section>
+
+<div class="dashboard-grid">
+    <section class="chart-panel">
+        <div class="panel-heading">
+            <div>
+                <h2>Live telemetry trend</h2>
+                <p>
+                    Red markers show anomalies. Gaps indicate
+                    interrupted telemetry.
+                </p>
+            </div>
+
+            <select id="sensorFilter" data-preserve-state
+                    aria-label="Choose sensor for chart">
+                <option value="">Select sensor</option>
+                @foreach (var sensor in Model.Sensors)
+                {
+                    <option value="@sensor.Id">
+                        @sensor.DeviceIdentifier
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="telemetryChart"
+                    role="img"
+                    aria-label="Recent sensor telemetry chart">
+            </canvas>
+            <p id="chartEmpty" class="chart-empty">
+                Select a sensor with numeric telemetry.
+            </p>
+        </div>
+    </section>
+
+    <section class="issue-panel">
+        <div class="panel-heading flex-wrap">
+            <div>
+                <h2>Active issues</h2>
+                <p>Prioritised by severity and latest activity.</p>
+            </div>
+            <select id="severityFilter" data-preserve-state
+                    aria-label="Filter issues by severity">
+                <option value="">All severities</option>
+                <option value="Critical">Critical</option>
+                <option value="Warning">Warning</option>
+            </select>
+        </div>
+
+        <div id="issueList" class="issue-list">
+            <p class="muted-text">
+                Loading active issues…
+            </p>
+        </div>
+    </section>
+</div>
+
+<section class="content-section">
+    <div class="panel-heading">
+        <div>
+            <h2>Sensor state</h2>
+            <p>
+                Heartbeat and deployment context for every node.
+            </p>
+        </div>
+        <span id="lastUpdated" class="muted-text">
+            Updating…
+        </span>
+    </div>
+
+    <div class="table-shell">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Sensor</th>
+                    <th>Category</th>
+                    <th>Deployment</th>
+                    <th>Status</th>
+                    <th>Last heartbeat</th>
+                </tr>
+            </thead>
+            <tbody id="sensorRows"></tbody>
+        </table>
+    </div>
+</section>
